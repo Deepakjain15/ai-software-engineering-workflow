@@ -1,0 +1,10 @@
+{
+  "name": "ai-dev-demo-project",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tiny sample app used to demo the ai-dev CLI end-to-end (plan -> implement -> test -> review -> fix).",
+  "type": "commonjs",
+  "scripts": {
+    "test": "node --test test/cart.test.js"
+  }
+}

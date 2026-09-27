@@ -1,0 +1,7 @@
+{
+  "text": "{\n  \"summary\": \"Applied each item's discountPercent before summing the cart total.\",\n  \"files\": [\n    {\n      \"path\": \"src/cart.js\",\n      \"content\": \"function calculateTotal(items) {\\n  return items.reduce((sum, item) => {\\n    const discount = item.discountPercent ? item.discountPercent / 100 : 0;\\n    const lineTotal = item.price * item.qty * (1 - discount);\\n    return sum + lineTotal;\\n  }, 0);\\n}\\n\\nmodule.exports = { calculateTotal };\\n\"\n    }\n  ]\n}",
+  "usage": {
+    "inputTokens": 845,
+    "outputTokens": 210
+  }
+}

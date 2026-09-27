@@ -1,0 +1,7 @@
+{
+  "text": "{\n  \"summary\": \"Clamped discountPercent to a max of 100 and used ?? 0 instead of a falsy check, per the review.\",\n  \"files\": [\n    {\n      \"path\": \"src/cart.js\",\n      \"content\": \"function calculateTotal(items) {\\n  return items.reduce((sum, item) => {\\n    const discountPercent = Math.min(item.discountPercent ?? 0, 100);\\n    const discount = discountPercent / 100;\\n    const lineTotal = item.price * item.qty * (1 - discount);\\n    return sum + lineTotal;\\n  }, 0);\\n}\\n\\nmodule.exports = { calculateTotal };\\n\"\n    }\n  ]\n}",
+  "usage": {
+    "inputTokens": 690,
+    "outputTokens": 165
+  }
+}

@@ -1,0 +1,4 @@
+{
+  "text": "# Review: cart discount fix\n\n**Correctness:** the fix now applies `discountPercent` per line item before summing, matching the test's expectation (190 for a 10%-off $100 item plus a full-price $100 item). Looks correct for the tested cases.\n\n**Edge case not covered by the current test:** `discountPercent` over 100 would make `lineTotal` negative, silently producing a negative cart total instead of clamping to 0 or rejecting the input. Worth a test + guard if this feeds a real checkout flow.\n\n**Minor:** `discount` is computed even when `discountPercent` is `0`/falsy via the ternary — fine functionally, but `item.discountPercent ?? 0` would be more explicit than relying on falsy-checks (a discountPercent of `0` and a missing field currently behave the same, which happens to be correct here, but isn't obviously correct on read).\n",
+  "usage": { "inputTokens": 530, "outputTokens": 142 }
+}

@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install ai-dev dependencies
+        run: npm install
+      - name: Typecheck
+        run: npm run lint
+      - name: Unit tests (no API key needed — offline fixtures only)
+        run: npm test
+      - name: Install demo-project dependencies
+        working-directory: demo-project
+        run: npm install --omit=dev || true
+      - name: End-to-end demo (offline fixture mode)
+        run: |
+          node dist/cli.js plan "Fix the cart discount bug"
+          node dist/cli.js implement
+      - name: Demo project tests should now pass after the fixture "implement" step
+        working-directory: demo-project
+        run: npm test

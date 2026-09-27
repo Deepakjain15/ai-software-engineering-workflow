@@ -1,0 +1,7 @@
+node_modules/
+demo-project/node_modules/
+dist/
+.env
+*.log
+PLAN.md
+demo-project/PLAN.md

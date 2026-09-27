@@ -1,0 +1,4 @@
+{
+  "text": "# Plan: Fix cart discount calculation\n\n## Problem\n`calculateTotal` in `src/cart.js` sums `price * qty` for every item but never applies `discountPercent`, so discounted items are overcharged.\n\n## Steps\n1. Read `src/cart.js` and `test/cart.test.js` to confirm the expected behavior (discount applied per-item before summing).\n2. Update `calculateTotal` to subtract each item's discount before adding it to the running total.\n3. Run the test suite to confirm `cart.test.js` now passes.\n4. Review the diff for edge cases (missing `discountPercent`, discount > 100%).\n\n## Acceptance criteria\n- `npm test` passes in `demo-project`.\n- No change to the function's public signature (still takes an array of `{ price, qty, discountPercent }`).\n",
+  "usage": { "inputTokens": 612, "outputTokens": 187 }
+}
