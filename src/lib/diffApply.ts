@@ -34,15 +34,42 @@ function parseEditPayload(modelText: string): EditPayload {
   return { summary: payload.summary ?? "(no summary provided)", files: payload.files };
 }
 
+/**
+ * The model chooses the file paths, so they are untrusted input. A path like "../x" or an
+ * absolute path must never be written outside the target project folder.
+ */
+function resolveInsideProject(targetDir: string, relativePath: unknown): string {
+  if (typeof relativePath !== "string" || relativePath.trim() === "") {
+    throw new Error("A file entry from the model had no usable path, so no files were changed.");
+  }
+  const root = path.resolve(targetDir);
+  const absPath = path.resolve(root, relativePath);
+  const relative = path.relative(root, absPath);
+  const escapes =
+    path.isAbsolute(relativePath) ||
+    relative === "" ||
+    relative === ".." ||
+    relative.startsWith(".." + path.sep) ||
+    path.isAbsolute(relative);
+  if (escapes) {
+    throw new Error(
+      `Refusing to write "${relativePath}": the path is outside the project folder, so no files were changed.`
+    );
+  }
+  return absPath;
+}
+
 export async function applyFileEdits(
   targetDir: string,
   modelText: string
 ): Promise<{ summary: string; filesWritten: string[] }> {
   const { summary, files } = parseEditPayload(modelText);
 
+  // Check every path BEFORE writing anything, so one unsafe path can't leave a half-applied change.
+  const resolved = files.map((file) => ({ file, absPath: resolveInsideProject(targetDir, file.path) }));
+
   const filesWritten: string[] = [];
-  for (const file of files) {
-    const absPath = path.join(targetDir, file.path);
+  for (const { file, absPath } of resolved) {
     await mkdir(path.dirname(absPath), { recursive: true });
     await writeFile(absPath, file.content, "utf-8");
     filesWritten.push(file.path);
